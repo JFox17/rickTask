@@ -1,11 +1,15 @@
 export const state = () => ({
-  results: [],
   characters: [],
+  results: [],
+  pages: [],
 })
 
 export const getters = {
   characters: (state) => {
     return state.characters
+  },
+  pages: (state) => {
+    return state.pages
   },
   results: (state) => {
     return state.results
@@ -13,6 +17,9 @@ export const getters = {
 }
 
 export const mutations = {
+  setPage (state, payload) {
+    state.page = payload
+  },
   setCharacters (state, payload) {
     state.characters = payload
   },
@@ -25,11 +32,16 @@ export const mutations = {
 export const actions = {
   getCharacters ({ commit }) {
     return this.$axios.$get('/character').then((res) => {
-      commit('setCharacters', res.info.pages)
+      commit('setCharacters', res)
+    })
+  },
+  getPages ({ commit }) {
+    return this.$axios.$get('/character').then((res) => {
+      commit('setPages', res.info.pages)
     })
   },
   getResults ({ commit }) {
-    return this.$axios.$get('/results').then((res) => {
+    return this.$axios.$get('/character').then((res) => {
       commit('setResults', res.results)
     })
   }
