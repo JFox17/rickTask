@@ -5,7 +5,14 @@
     </div>
     <span class="character-block__elem">{{ result.name }}</span>
     <span class="character-block__elem">{{ result.status }}</span>
-    <span class="character-block__episode">{{ result.episode.indexOf(1, 5) }}</span>
+    <div class="character-block__episode">
+      <span
+        v-for="(element, index) in result.episode.slice( 0,5 )"
+        :key="index"
+      >
+        {{ element }}
+      </span>
+    </div>
   </div>
 </template>
 
@@ -28,10 +35,12 @@ export default {
   display: flex
   justify-content: space-around
   max-width: 600px
+  margin-bottom: 20px
 
   &__img
     width: 200px
 
   &__elem
     margin: 0 10px
+    display: flex
 </style>

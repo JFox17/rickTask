@@ -30,9 +30,10 @@ export const mutations = {
 }
 
 export const actions = {
-  getCharacters ({ commit }) {
-    return this.$axios.$get('/character').then((res) => {
-      commit('setCharacters', res)
+  getCharacters ({ commit }, data) {
+    return this.$axios.$get('/character', {params: data}).then((res) => {
+      commit('setCharacters', res.data)
+      commit('setResults', res.results)
     })
   },
   getPages ({ commit }) {
