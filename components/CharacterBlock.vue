@@ -3,7 +3,7 @@
     <div class="character-block__img">
       <img :src="result.image" :alt="result.name" class="character-block__img">
     </div>
-    <span class="character-block__elem">{{ result.name }}</span>
+    <span class="character-block__elem" @click="test()">{{ result.name }}</span>
     <span class="character-block__elem">{{ result.status }}</span>
     <div class="character-block__episode">
       <span
@@ -23,8 +23,23 @@ export default {
   props: {
     result: {
       type: Object,
-      required: true,
-
+      required: true
+    },
+    name: null,
+    id: null
+  },
+  methods: {
+    test() {
+      this.$router.push({ path: '/character', query: {id: this.result.id}})
+      this.$store.dispatch('character/getCharacters', {id: this.result.id})
+      // console.log(this.$store.getters['character/getCharacters', {id: this.result.id}])
+    //  id = result.id
+    //   console.log(id)
+      // this.$store.dispatch('character/getCharacters', {id: this.id})
+      
+      // const {id} =this.$router.params
+      // this.name = this.$store.dispatch('character/getCharacters', {id})
+      // console.log(this.name)
     }
   }
 }

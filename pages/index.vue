@@ -8,12 +8,18 @@
         <div class="list__arrow-left" v-on:click="prevPage" id="prev">  Назад</div>
         <div class="list__arrow-right" v-on:click="nextPage" id="next"> Вперед </div>
       </div>
-      <form class="list__search">
-        <p>
-          <input type="search" name="q" placeholder="Поиск по сайту"> 
-          <input type="submit" value="Найти">
-        </p>
-      </form>
+      <div class="list__search">
+        <input type="search" v-model="name" placeholder="Поиск по сайту" @input="searchName"> 
+      </div>
+      <div class="list__selected">
+        <select v-model="status" @change="selectStatus">
+          <option disabled value="">Выберите статус</option>
+          <option>alive</option>
+          <option>dead</option>
+          <option>unknown</option>
+        </select>
+      </div>
+      <button v-on:click="clearStatus">Сбросить</button>
       <div class="list__links">
         <character-block
           v-for="result in results"
@@ -30,7 +36,9 @@ import characterBlock from '../components/CharacterBlock.vue'
 export default {
   data() {
     return {
-      page: this.$route.query.page || 1
+      page: this.$route.query.page || 1,
+      name: '',
+      status: ''
     }
   },
   components: {
@@ -38,7 +46,7 @@ export default {
   },
   mounted () {
     this.$store.dispatch('character/getCharacters', { page: this.page })
-    console.log(this.$route)
+    this.$store.dispatch('episode/getEpisode')
   },
   computed: {
     results () {
@@ -72,6 +80,21 @@ export default {
         this.$store.dispatch('character/getCharacters', { page: this.page })
       }
       
+    },
+    searchName() {
+      if (this.name === '') {
+        this.$store.dispatch('character/getCharacters', { page: this.page })
+      } else {
+        this.$store.dispatch('character/getCharacters', { name: this.name, status: this.status })
+      }
+      
+    },
+    selectStatus() {
+      this.$store.dispatch('character/getCharacters', { page: this.page, status: this.status, name: this.name })
+    },
+    clearStatus() {
+      this.status = ''
+      this.$store.dispatch('character/getCharacters', { page: this.page, name: this.name })
     }
   }
 }
@@ -114,6 +137,12 @@ export default {
 
   &__search
     cursor: pointer
+    border: 2px solid black
+    margin: 10px 0
+
+  &__selected
+    cursor: pointer
+    border: 2px solid black
     margin: 10px 0
 
 </style>
