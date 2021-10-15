@@ -5,7 +5,7 @@
         testTask
       </h1>
       <div class="list__arrow">
-        <div class="list__arrow-left" v-on:click="prevPage" id="prev">  Назад</div>
+        <div class="list__arrow-left" v-on:click="prevPage" id="prev"> Назад</div>
         <div class="list__arrow-right" v-on:click="nextPage" id="next"> Вперед </div>
       </div>
       <div class="list__search">

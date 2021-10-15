@@ -2,6 +2,7 @@ export const state = () => ({
   characters: [],
   results: [],
   pages: [],
+  hero: []
 })
 
 export const getters = {
@@ -13,7 +14,11 @@ export const getters = {
   },
   results: (state) => {
     return state.results
-  }
+  },
+  hero: (state) => {
+    return state.hero
+  },
+  
 }
 
 export const mutations = {
@@ -26,6 +31,9 @@ export const mutations = {
   setResults (state, payload) {
     state.results = payload
   },
+  setHero (state, payload) {
+    state.hero = payload
+  }
 
 }
 
@@ -36,16 +44,28 @@ export const actions = {
       commit('setResults', res.results)
     })
   },
+  getHero ({ commit }, id) {
+    return this.$axios.$get('/character' +'/' + id).then((res) => {
+      commit('setHero', res)
+    })
+  },
   getPages ({ commit }) {
     return this.$axios.$get('/character').then((res) => {
       commit('setPages', res.info.pages)
     })
   },
-  getResults ({ commit }) {
-    return this.$axios.$get('/character').then((res) => {
-      commit('setResults', res.results)
+  getEpisodeCharacter ({ commit }, data) {
+    return this.$axios.$get('/character', {params: data}).then((res) => {
+      return this.$axios.$get('/episode', {params: data}).then((res) => {
+
+      })
     })
-  }
+  }, 
+  // getResults ({ commit }) {
+  //   return this.$axios.$get('/character').then((res) => {
+  //     commit('setResults', res.results)
+  //   })
+  // }
   // characters ({commit},page) {
   //   return this.$axios.$get('/character?page=${page}').then((data) => {
   //     const {info, result} = data
