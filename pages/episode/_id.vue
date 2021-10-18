@@ -1,21 +1,22 @@
 <template>
   <div class="container">
     <div class="episode">
-        <div class="episode__block-elem">
-          <span class="episode__elem">Название: {{ episode.name }}</span>
-          <span class="episode__elem">Дата премьеры: {{ episode.created }}</span>
-        </div>
+      <div class="episode__block-elem">
+        <span class="episode__elem">Название: {{ episode.name }}</span>
+        <span class="episode__elem">Дата премьеры: {{ episode.air_date }}</span>
+        <button class="episode__btn" @click="back()">Главное меню</button>
+      </div>
+      <div class="episode__wrap">
         <div
           v-for="(characters, index) in episode.characters"
           :key="index"
-          class="episode__img"
+          class="episode__elem-dop"
+          @click="routeToCharacter(episode.id)"
         >
-          {{ characters }}
-        <!-- <img :src="result.image" :alt="result.name" class="episode__img"> -->
+          <img :src="characters.image" class="episode__img" v-if="characters.image">
         </div>
+      </div>
     </div>
-    {{ $store.getters['episode/episode']}}
-    <button class="episode__btn"  @click="back()">Главное меню</button>
   </div>
 </template>
 <script>
@@ -37,29 +38,27 @@ export default {
   methods: {
     back() {
       this.$router.push({path: '/', query: {page: this.page}})
-    }
+    },
+    routeToCharacter(id) {
+      this.$router.push({ path: `/character/${id}`})
+    },
   },
 }
 </script>
 
 <style scoped lang="sass">
 .container
-  display: flex
-  justify-content: center
-  align-items: center
-  flex-direction: column
   background: rgb(32, 35, 41)
   max-width: 1440px
   font-family: Arial
-  height: 100vh
   font-weight: bold
 
 .episode
   color: black
   display: flex
-  justify-content: space-around
-  @media(max-width: 450px)
-    flex-direction: column
+  flex-direction: column
+  align-item: center
+
 
   &__block-elem
     display: flex
@@ -67,14 +66,26 @@ export default {
     flex-direction: column
     align-items: center
     margin-left: 30px
+    margin-top: 20px
 
   &__elem
     color: whitesmoke
-    font-size: 18px
+    font-size: 25px
+    line-height: 40px
+
+  &__elem-dop
+    cursor: pointer
+
+  &__wrap
+    margin-top: 20px
+    display: flex
+    flex-wrap: wrap
+    justify-content: space-around
   
   &__img
     max-width: 250px
     border-radius: 15px
+    margin: 10px
 
   &__btn
     margin: 21px 0
@@ -84,5 +95,6 @@ export default {
     font-size: 16px
     font-weight: bold
     border-radius: 7px
+    display: block
 </style>
 

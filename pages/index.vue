@@ -25,19 +25,18 @@
       <div class="list__links">
         <div v-for="(result, index) in results" :key= "index" class="character-block">
           <div>
-            <img :src="result.image" :alt="result.name" class="character-block__img">
+            <img v-if="result.image && result.name" :src="result.image" :alt="result.name" class="character-block__img">
           </div>
           <div  class="character-block__elem-block">
-            <span class="character-block__elem character-block__elem-dop" @click="routeToCharacter(result.id)">Имя персонажа: {{ result.name }}</span>
-            <span class="character-block__elem">Статус: {{ result.status }}</span>
+            <span v-if="result.name" class="character-block__elem character-block__elem-dop" @click="routeToCharacter(result.id)">Имя персонажа: {{ result.name }}</span>
+            <span v-if="result.status" class="character-block__elem">Статус: {{ result.status }}</span>
             <span class="character-block__elem">Эпизоды:</span>
             <div class="character-block__episode character-block__elem-dop">
               <span
                 v-for="(episode, episodeIndex) in result.episode.slice(0, 5)"
                 :key="episodeIndex"
-                @click="routeToEpisode(episode.id)"
               >
-              {{ episode.name }}
+              <span v-if="episode !== undefined" @click="routeToEpisode(episode.id)">{{ episode.name }}</span>
               </span>
             </div>
           </div>
@@ -221,6 +220,7 @@ export default {
     align-items: center
     justify-content: space-around
     margin-left: 10px
+    width: 300px
 
   &__img
     max-width: 200px
