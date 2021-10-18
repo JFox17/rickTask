@@ -2,7 +2,9 @@ export const state = () => ({
   characters: [],
   results: [],
   pages: [],
-  hero: []
+  hero: [],
+  test: [],
+  episodeCharacter: null
 })
 
 export const getters = {
@@ -13,10 +15,18 @@ export const getters = {
     return state.pages
   },
   results: (state) => {
+    // console.log(state.results)
     return state.results
+    
   },
   hero: (state) => {
     return state.hero
+  },
+  episodeCharacter: (state) => {
+    return state.episodeCharacter
+  },
+  test: (state) => {
+    return state.test
   },
   
 }
@@ -29,18 +39,35 @@ export const mutations = {
     state.characters = payload
   },
   setResults (state, payload) {
-    state.results = payload
+    const test = payload
+    // state.results = test
+    for (let i = 0; i < test.length; i++) {
+      for (let b = 0; b < test[i].episode.length; b++) {
+        let url = test[i].episode[b]
+        this.$axios.$get(url).then((res) => {
+            test[i].episode[b] = res
+        })
+      }
+    }
+    console.log(test)
+    state.results = test
+    // state.results = state.results.splice(state.results.length)
+    // console.log(state.results)
+    // state.results = test
+    
+    // console.log(test)
   },
   setHero (state, payload) {
     state.hero = payload
-  }
-
+  },
+  setEpisodeCharacter(state, payload) {
+    state.episodeCharacter = payload
+  },
 }
 
 export const actions = {
   getCharacters ({ commit }, data) {
     return this.$axios.$get('/character', {params: data}).then((res) => {
-      commit('setCharacters', res.data)
       commit('setResults', res.results)
     })
   },
@@ -54,23 +81,14 @@ export const actions = {
       commit('setPages', res.info.pages)
     })
   },
-  getEpisodeCharacter ({ commit }, data) {
-    return this.$axios.$get('/character', {params: data}).then((res) => {
-      return this.$axios.$get('/episode', {params: data}).then((res) => {
-
-      })
+  getEpisodeCharacter ({ commit }, url) {
+    return this.$axios.$get(url).then((res) => {
+      commit('setEpisodeCharacter', res)
     })
-  }, 
-  // getResults ({ commit }) {
-  //   return this.$axios.$get('/character').then((res) => {
-  //     commit('setResults', res.results)
+  },
+  // getEpisode ({ commit }) {
+  //   return this.$axios.$get('/episode').then((res) => {
+  //     commit('setTest', res.results)
   //   })
-  // }
-  // characters ({commit},page) {
-  //   return this.$axios.$get('/character?page=${page}').then((data) => {
-  //     const {info, result} = data
-  //     commit('setCharacters', {page, characters: result})
-  //     commit('setPages', info.pages)
-  //   })
-  // }
+  // },
 }

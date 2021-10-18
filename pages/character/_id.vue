@@ -4,58 +4,83 @@
       <div class="profile__img">
         <img :src="results.image" :alt="results.name" class="profile__img">
       </div>
-      <span class="profile__elem">{{ results.name }}</span>
-      <span class="profile__elem">{{ results.status }}</span>
-      <span class="profile__elem">{{ results.location.name }}</span>
+      <div class="profile__block-elem">
+        <span class="profile__elem">Имя: {{ results.name }}</span>
+        <span class="profile__elem">Разновидность: {{ results.species }}</span>
+        <span class="profile__elem" v-if="results.location">Локация: {{ results.location.name }}</span>
+      </div>
     </div>
+    <button class="profile__btn"  @click="back()">Главное меню</button>
   </div>
 </template>
 <script>
-// import characterBlock from '../../components/CharacterBlock.vue'
 export default {
   data() {
     return {
-      id: this.$route.params.id
+      id: this.$route.params.id,
+      page: 1
     }
   },
-  // props: {
-  //   result: {
-  //     type: Object,
-  //     required: true
-  //   }
-  // },
   mounted () {
    this.$store.dispatch('character/getHero', this.id)
-   console.log(this.$route.params.id)
-    // this.$store.dispatch('episode/getEpisode')
   },
   computed: {
     results () {
-      // this.id = this.$route.params.id
-      // console.log(this.$route.params.id)
       return this.$store.getters['character/hero']
-      // console.log(this.$route.params.id)
+    },
+    location () {
+      return this.$store.getters['character/location']
     }
   },
-  // created() {
-  //   const id = this.$router.params
-  //   if (id) {
-  //     const {data} = this.$store.dispatch('character/getCharacters', {id})
-  //     this.result = data
-  //     console.log(this.result)
-  //   }
-  // }
-
+  methods: {
+    back() {
+      this.$router.push({path: '/', query: {page: this.page}})
+    }
+  },
 }
 </script>
 
 <style scoped lang="sass">
+.container
+  display: flex
+  justify-content: center
+  align-items: center
+  flex-direction: column
+  background: rgb(32, 35, 41)
+  max-width: 1440px
+  font-family: Arial
+  height: 100vh
+  font-weight: bold
+
 .profile
-  font-size: 18px
   color: black
   display: flex
+  justify-content: space-around
+  @media(max-width: 450px)
+    flex-direction: column
+
+  &__block-elem
+    display: flex
+    justify-content: space-around
+    flex-direction: column
+    align-items: center
+    margin-left: 30px
 
   &__elem
-    margin: 0 10px
+    color: whitesmoke
+    font-size: 18px
+  
+  &__img
+    max-width: 250px
+    border-radius: 15px
+
+  &__btn
+    margin: 21px 0
+    padding: 15px 10px
+    background: #3b3e43
+    color: whitesmoke
+    font-size: 16px
+    font-weight: bold
+    border-radius: 7px
 </style>
 
