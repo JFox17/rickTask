@@ -10,7 +10,7 @@
       </div>
       <div class="list__filter">
         <div class="list__search">
-          <input type="search" v-model="name" placeholder="Поиск по сайту" @input="searchName"> 
+          <input type="search" v-model="name" placeholder="Поиск по сайту" @input="searchName">
         </div>
         <div class="list__selected">
           <select v-model="status" @change="selectStatus" class="list__selected-text">
@@ -22,20 +22,32 @@
         </div>
         <button v-on:click="clearStatus" class="list__btn">Сбросить</button>
       </div>
-      <!-- <p>{{$store.getters['character/results']}}</p> -->
       <div class="list__links">
-        <character-block
-          v-for="result in results"
-          :key="result.id"
-          :result = "result"
-        />
+        <div v-for="(result, index) in results" :key= "index" class="character-block">
+          <div>
+            <img :src="result.image" :alt="result.name" class="character-block__img">
+          </div>
+          <div  class="character-block__elem-block">
+            <span class="character-block__elem character-block__elem-dop" @click="routeToCharacter(result.id)">Имя персонажа: {{ result.name }}</span>
+            <span class="character-block__elem">Статус: {{ result.status }}</span>
+            <span class="character-block__elem">Эпизоды:</span>
+            <div class="character-block__episode character-block__elem-dop">
+              <span
+                v-for="(episode, episodeIndex) in result.episode.slice(0, 5)"
+                :key="episodeIndex"
+                @click="routeToEpisode(episode.id)"
+              >
+              {{ episode.name }}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import characterBlock from '../components/CharacterBlock.vue'
 export default {
   data() {
     return {
@@ -44,23 +56,21 @@ export default {
       status: ''
     }
   },
-  components: {
-    characterBlock
-  },
   mounted () {
     this.$store.dispatch('character/getCharacters', { page: this.page })
-    this.$store.dispatch('character/getEpisode')
   },
   computed: {
     results () {
-      // console.log(this.$store.getters['character/results'])
       return this.$store.getters['character/results']
-    },
-    test () {
-      return this.$store.getters['character/test']
     }
   },
   methods: {
+    routeToCharacter(id) {
+      this.$router.push({ path: `/character/${id}`})
+    },
+    routeToEpisode(id) {
+      this.$router.push({ path: `/episode/${id}`})
+    },
     nextPage() {
       if (this.page > 32) {
         this.page++
@@ -86,7 +96,7 @@ export default {
         this.$router.push({path: '/', query: {page: this.page}})
         this.$store.dispatch('character/getCharacters', { page: this.page })
       }
-      
+
     },
     searchName() {
       if (this.name === '') {
@@ -94,7 +104,7 @@ export default {
       } else {
         this.$store.dispatch('character/getCharacters', { name: this.name, status: this.status })
       }
-      
+
     },
     selectStatus() {
       this.$store.dispatch('character/getCharacters', { page: this.page, status: this.status, name: this.name })
@@ -140,17 +150,17 @@ export default {
     display: flex
     flex-wrap: wrap
     justify-content: space-around
-  
+
   &__arrow
     display: flex
     justify-content: space-around
     color: rgb(245, 245, 245)
     font-size: 16px
     font-weight: bold
-  
+
   &__arrow-left
     cursor: pointer
-  
+
   &__arrow-right
     cursor: pointer
 
@@ -194,4 +204,50 @@ export default {
       width: 140px
       height: 50px
 
+.character-block
+  display: flex
+  justify-content: space-around
+  max-width: 600px
+  margin-bottom: 20px
+  background: rgb(60, 62, 68)
+  border-radius: 15px
+  padding: 20px
+  @media(max-width: 450px)
+    flex-direction: column
+
+  &__elem-block
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: space-around
+    margin-left: 10px
+
+  &__img
+    max-width: 200px
+    border-radius: 15px
+    @media(min-width: 370px) and (max-width: 600px)
+      min-width: 150px
+    @media(max-width: 369px)
+      min-width: 120px
+
+  &__elem
+    display: flex
+    color: rgb(245, 245, 245)
+    font-family: Arial
+    font-size: 16px
+    font-weight: bold
+    @media(max-width: 600px)
+      font-size: 14px
+
+  &__elem-dop
+    cursor: pointer
+
+  &__episode
+    color: rgb(245, 245, 245)
+    font-family: Arial
+    font-size: 16px
+    line-height: 20px
+    font-weight: bold
+    display: flex
+    flex-direction: column
 </style>

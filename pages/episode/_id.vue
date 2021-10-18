@@ -1,16 +1,21 @@
 <template>
   <div class="container">
-    <div class="profile">
-      <div class="profile__img">
-        <img :src="results.image" :alt="results.name" class="profile__img">
-      </div>
-      <div class="profile__block-elem">
-        <span class="profile__elem">Имя: {{ results.name }}</span>
-        <span class="profile__elem">Разновидность: {{ results.species }}</span>
-        <span class="profile__elem" v-if="results.location">Локация: {{ results.location.name }}</span>
-      </div>
+    <div class="episode">
+        <div class="episode__block-elem">
+          <span class="episode__elem">Название: {{ episode.name }}</span>
+          <span class="episode__elem">Дата премьеры: {{ episode.created }}</span>
+        </div>
+        <div
+          v-for="(characters, index) in episode.characters"
+          :key="index"
+          class="episode__img"
+        >
+          {{ characters }}
+        <!-- <img :src="result.image" :alt="result.name" class="episode__img"> -->
+        </div>
     </div>
-    <button class="profile__btn"  @click="back()">Главное меню</button>
+    {{ $store.getters['episode/episode']}}
+    <button class="episode__btn"  @click="back()">Главное меню</button>
   </div>
 </template>
 <script>
@@ -22,11 +27,11 @@ export default {
     }
   },
   mounted () {
-   this.$store.dispatch('character/getHero', this.id)
+   this.$store.dispatch('episode/getEpisode', this.id)
   },
   computed: {
-    results () {
-      return this.$store.getters['character/hero']
+    episode () {
+      return this.$store.getters['episode/episode']
     }
   },
   methods: {
@@ -49,7 +54,7 @@ export default {
   height: 100vh
   font-weight: bold
 
-.profile
+.episode
   color: black
   display: flex
   justify-content: space-around

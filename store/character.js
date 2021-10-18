@@ -15,9 +15,7 @@ export const getters = {
     return state.pages
   },
   results: (state) => {
-    // console.log(state.results)
     return state.results
-    
   },
   hero: (state) => {
     return state.hero
@@ -28,7 +26,7 @@ export const getters = {
   test: (state) => {
     return state.test
   },
-  
+
 }
 
 export const mutations = {
@@ -40,22 +38,12 @@ export const mutations = {
   },
   setResults (state, payload) {
     const test = payload
-    // state.results = test
-    for (let i = 0; i < test.length; i++) {
-      for (let b = 0; b < test[i].episode.length; b++) {
-        let url = test[i].episode[b]
-        this.$axios.$get(url).then((res) => {
-            test[i].episode[b] = res
-        })
-      }
-    }
-    console.log(test)
     state.results = test
-    // state.results = state.results.splice(state.results.length)
-    // console.log(state.results)
-    // state.results = test
-    
-    // console.log(test)
+  },
+  setTest (state, payload) {
+    state.results[payload.i].episode[payload.b] = Object.assign({}, payload.res)
+    Object.assign(state.results[payload.i].episode[payload.b], payload.res)
+    state.results.splice()
   },
   setHero (state, payload) {
     state.hero = payload
@@ -69,6 +57,17 @@ export const actions = {
   getCharacters ({ commit }, data) {
     return this.$axios.$get('/character', {params: data}).then((res) => {
       commit('setResults', res.results)
+      const test = res.results
+      for (let i = 0; i < test.length; i++) {
+        for (let b = 0; b < test[i].episode.length; b++) {
+          let url = test[i].episode[b]
+          this.$axios.$get(url).then((res) => {
+            commit('setTest', {i: i, b: b, res: res})
+          })
+        }
+      }
+      // console.log(test)
+      commit('setResults', test)
     })
   },
   getHero ({ commit }, id) {
@@ -85,10 +84,5 @@ export const actions = {
     return this.$axios.$get(url).then((res) => {
       commit('setEpisodeCharacter', res)
     })
-  },
-  // getEpisode ({ commit }) {
-  //   return this.$axios.$get('/episode').then((res) => {
-  //     commit('setTest', res.results)
-  //   })
-  // },
+  }
 }
